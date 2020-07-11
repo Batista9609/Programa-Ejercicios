@@ -1,0 +1,989 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
+using System.ComponentModel.Design;
+
+namespace Asunto_de_programación
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+
+            TextWriter archivo;
+            TextReader leer_archivo;
+            string n, contraseña, contraseñaL, respuesta, sexo, sexoL, intensidad, intensidadL, ObjetivoRutina;
+            Double peso, pesoD, pesoL, pesoIdealM, pesoIdealm, altura, alturaL, alturaM;
+            Int32 opcion, opcion1, edad, edadL;
+            Directory.CreateDirectory(@"Documents\Usuario");
+            DateTime fecha;
+
+            do
+            {
+                do
+                {
+                Registro:
+                    Console.WriteLine("Registro");
+                    Console.WriteLine("Seleccione la acción que desea realizar [1-2]: ");
+                    Console.WriteLine("--------------------------------------------------");
+                    Console.WriteLine("[1] Conectarse");
+                    Console.WriteLine("[2] Crear cuenta");
+                    opcion = Convert.ToInt32(Console.ReadLine());
+
+                    switch (opcion)
+                    {
+                        case 1:
+
+                            Console.Write("Introduzca su nombre de usuario: ");
+                            n = Console.ReadLine();
+
+                            if (Directory.Exists(@"Documents\Usuario\" + n))
+                            {
+                                Console.Write("Introduzca su contraseña: ");
+                                contraseña = Console.ReadLine();
+                                leer_archivo = new StreamReader(@"Documents\Usuario\" + n + "/Contraseña.txt");
+                                contraseñaL = (leer_archivo.ReadLine());
+
+
+
+                                if (contraseña == contraseñaL)
+                                {
+
+                                    do
+                                    {
+                                        Console.Clear();
+                                    Menu:
+                                        Console.WriteLine("Menu");
+                                        Console.WriteLine("Seleccione la acción que desea relizar [1-5]: ");
+                                        Console.WriteLine("--------------------------------------------------");
+                                        Console.WriteLine("[1] Aumentar peso");
+                                        Console.WriteLine("[2] Disminuir peso");
+                                        Console.WriteLine("[3] Trabajar algún área en específico");
+                                        Console.WriteLine("[4] Mantenerse en forma");
+                                        Console.WriteLine("[5] Continuar rutina");
+                                     
+
+                                        leer_archivo = new StreamReader(@"Documents\Usuario\" + n + "/Peso.txt");
+                                        pesoL = Convert.ToDouble((leer_archivo.ReadLine()));
+
+                                        leer_archivo = new StreamReader(@"Documents\Usuario\" + n + "/Edad.txt");
+                                        edadL = Convert.ToInt32((leer_archivo.ReadLine()));
+
+                                        leer_archivo = new StreamReader(@"Documents\Usuario\" + n + "/Altura.txt");
+                                        alturaL = Convert.ToDouble((leer_archivo.ReadLine()));
+
+                                        leer_archivo = new StreamReader(@"Documents\Usuario\" + n + "/Sexo.txt");
+                                        sexoL = (leer_archivo.ReadLine());
+
+                                        alturaM = alturaL / 100;
+                                        pesoIdealM = (Math.Pow(alturaM, 2) * 24.9);
+                                        pesoIdealm = (Math.Pow(alturaM, 2) * 18.5);
+
+                                        fecha = DateTime.Today;
+
+                                        opcion1 = Convert.ToInt32(Console.ReadLine());
+
+                                        switch (opcion1)
+                                        {
+                                            case 1:
+                                                archivo = new StreamWriter(@"Documents\Usuario\" + n + "/Objetivo rutina.txt");
+                                                archivo.WriteLine("1");
+                                                archivo.Close();
+
+                                                if (File.Exists(@"Documents\Usuario\" + n + "/Rutina.txt"))
+                                                {
+                                                    Console.WriteLine("Ya posee una rutina actualmente");
+                                                    Console.ReadKey();
+                                                    Console.Clear();
+                                                    goto Menu;
+                                                }
+
+                                                else
+                                                {
+
+                                                    do
+                                                    {
+                                                        Console.Write("Introduzca su peso deseado: ");
+                                                        pesoD = Convert.ToDouble(Console.ReadLine());
+
+                                                        if (pesoD < pesoL + 1)
+                                                        {
+                                                            Console.WriteLine("El peso deseado ingresado es menor o igual al actual. Introduzcalo nuevamente.");
+                                                        }
+                                                    } while (pesoD < pesoL + 1);
+
+                                                    
+                                                    do
+                                                    {
+                                                        Console.WriteLine("Seleccione la intensidad de la rutina: [1-3]");
+                                                        Console.WriteLine("[1] Intensidad baja");
+                                                        Console.WriteLine("[2] Intensidad intermedia");
+                                                        Console.WriteLine("[3] Intensidad alta");
+                                                        intensidad = Console.ReadLine();
+
+                                                        switch (intensidad)
+                                                        {
+                                                            case "1":
+                                                                archivo = new StreamWriter(@"Documents\Usuario\" + n + "/Intensidad.txt");
+                                                                archivo.WriteLine("Baja");
+                                                                archivo.Close();
+
+                                                                leer_archivo = new StreamReader(@"Documents\Usuario\" + n + "/Intensidad.txt");
+                                                                intensidadL = (leer_archivo.ReadLine());
+
+                                                                Console.Clear();
+                                                                Archivar(archivo, leer_archivo, n, alturaL, sexoL, edadL, fecha, pesoL, pesoD, intensidadL);
+
+                                                                Console.WriteLine("Su Gasto calórico diario es de: " + Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL));
+                                                                Console.WriteLine("Su consumo diario de calorias debe ser de: " + (ConsumoAumento(pesoL, alturaL, edadL, intensidadL, sexoL) + Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL)));
+
+                                                                Console.WriteLine("Su rutina es:");
+                                                                Rutina(intensidadL);
+                                                                break;
+
+                                                            case "2":
+                                                                archivo = new StreamWriter(@"Documents\Usuario\" + n + "/Intensidad.txt");
+                                                                archivo.WriteLine("Media");
+                                                                archivo.Close();
+
+                                                                leer_archivo = new StreamReader(@"Documents\Usuario\" + n + "/Intensidad.txt");
+                                                                intensidadL = (leer_archivo.ReadLine());
+
+                                                                Console.Clear();
+                                                                Archivar(archivo, leer_archivo, n, alturaL, sexoL, edadL, fecha, pesoL, pesoD, intensidadL);
+
+                                                                Console.WriteLine("Su Gasto calórico diario es de: " + Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL));
+                                                                Console.WriteLine("Su consumo diario de calorias debe ser de: " + (ConsumoAumento(pesoL, alturaL, edadL, intensidadL, sexoL) + Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL)));
+
+                                                                Console.WriteLine("Su rutina es:");
+                                                                Rutina(intensidadL);
+                                                                break;
+
+                                                            case "3":
+                                                                archivo = new StreamWriter(@"Documents\Usuario\" + n + "/Intensidad.txt");
+                                                                archivo.WriteLine("Alta");
+                                                                archivo.Close();
+
+                                                                leer_archivo = new StreamReader(@"Documents\Usuario\" + n + "/Intensidad.txt");
+                                                                intensidadL = (leer_archivo.ReadLine());
+
+                                                                Console.Clear();
+                                                                Archivar(archivo, leer_archivo, n, alturaL, sexoL, edadL, fecha, pesoL, pesoD, intensidadL);
+
+                                                                Console.WriteLine("Su Gasto calórico diario es de: " + Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL));
+                                                                Console.WriteLine("Su consumo diario de calorias debe ser de: " + (ConsumoAumento(pesoL, alturaL, edadL, intensidadL, sexoL) + Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL)));
+                                                                Console.WriteLine("Su rutina es:");
+                                                                Rutina(intensidadL);
+                                                                break;
+
+                                                            default:
+                                                                Console.WriteLine("La opción seleccionada no es válida");
+                                                                break;
+                                                        }
+                                                    } while (intensidad != "1" && intensidad != "2" && intensidad != "3");
+                                                }
+                                                Console.ReadKey();
+                                                Console.Clear();
+                                                break;
+
+                                            case 2:
+                                                archivo = new StreamWriter(@"Documents\Usuario\" + n + "/Objetivo rutina.txt");
+                                                archivo.WriteLine("2");
+                                                archivo.Close();
+
+                                                if (File.Exists(@"Documents\Usuario\" + n + "/Rutina.txt"))
+                                                {
+                                                    Console.WriteLine("Ya posee una rutina actualmente");
+                                                    Console.ReadKey();
+                                                    Console.Clear();
+                                                    goto Menu;
+                                                }
+                                                else
+                                                {
+                                                    Console.Clear();
+                                                    do
+                                                    {
+
+                                                        Console.Write("Introduzca su peso deseado: ");
+                                                        pesoD = Convert.ToDouble(Console.ReadLine());
+
+                                                        if (pesoD + 1 > pesoL)
+                                                        {
+                                                            Console.WriteLine("El peso deseado ingresado es mayor o igual al actual. Introduzcalo nuevamente.");
+                                                        }
+                                                    } while (pesoD + 1 > pesoL);
+                                                    
+                                                    do
+                                                    {
+                                                        Console.WriteLine("Seleccione la intensidad de la rutina: [1-3]");
+                                                        Console.WriteLine("[1] Intensidad baja");
+                                                        Console.WriteLine("[2] Intensidad intermedia");
+                                                        Console.WriteLine("[3] Intensidad alta");
+                                                        intensidad = Console.ReadLine();
+
+                                                        switch (intensidad)
+                                                        {
+                                                            case "1":
+                                                                archivo = new StreamWriter(@"Documents\Usuario\" + n + "/Intensidad.txt");
+                                                                archivo.WriteLine("Baja");
+                                                                archivo.Close();
+
+                                                                leer_archivo = new StreamReader(@"Documents\Usuario\" + n + "/Intensidad.txt");
+                                                                intensidadL = (leer_archivo.ReadLine());
+
+                                                                Console.Clear();
+                                                                Archivar(archivo, leer_archivo, n, alturaL, sexoL, edadL, fecha, pesoL, pesoD, intensidadL);
+
+                                                                Console.WriteLine("Su Gasto calórico diario es de: " + Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL));
+                                                                Console.WriteLine("Su consumo diario de calorias debe ser de: " + (Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL) - 500));
+                                                                Console.WriteLine("Su rutina es:");
+                                                                Rutina(intensidadL);
+                                                                break;
+
+                                                            case "2":
+                                                                archivo = new StreamWriter(@"Documents\Usuario\" + n + "/Intensidad.txt");
+                                                                archivo.WriteLine("Media");
+                                                                archivo.Close();
+
+                                                                leer_archivo = new StreamReader(@"Documents\Usuario\" + n + "/Intensidad.txt");
+                                                                intensidadL = (leer_archivo.ReadLine());
+
+                                                                Console.Clear();
+                                                                Archivar(archivo, leer_archivo, n, alturaL, sexoL, edadL, fecha, pesoL, pesoD, intensidadL);
+
+                                                                Console.WriteLine("Su Gasto calórico diario es de: " + Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL));
+                                                                Console.WriteLine("Su consumo diario de calorias debe ser de: " + (Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL) - 500));
+                                                                break;
+
+                                                            case "3":
+
+                                                                archivo = new StreamWriter(@"Documents\Usuario\" + n + "/Intensidad.txt");
+                                                                archivo.WriteLine("Alta");
+                                                                archivo.Close();
+
+                                                                leer_archivo = new StreamReader(@"Documents\Usuario\" + n + "/Intensidad.txt");
+                                                                intensidadL = (leer_archivo.ReadLine());
+
+                                                                Console.Clear();
+                                                                Archivar(archivo, leer_archivo, n, alturaL, sexoL, edadL, fecha, pesoL, pesoD, intensidadL);
+
+                                                                Console.WriteLine("Su Gasto calórico diario es de: " + Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL));
+                                                                Console.WriteLine("Su consumo diario de calorias debe ser de: " + (Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL) - 500));
+                                                                Console.WriteLine("Su rutina es:");
+                                                                Rutina(intensidadL);
+                                                                break;
+
+                                                            default:
+                                                                Console.WriteLine("La opción seleccionada no es válida");
+                                                                break;
+                                                        }
+                                                    } while (intensidad != "1" && intensidad != "2" && intensidad != "3");
+
+                                                }
+                                                Console.ReadKey();
+                                                Console.Clear();
+                                                break;
+
+                                            case 3:
+                                                if (File.Exists(@"Documents\Usuario\" + n + "/Rutina.txt"))
+                                                {
+                                                    Console.WriteLine("Ya posee una rutina actualmente");
+                                                    Console.ReadKey();
+                                                    Console.Clear();
+                                                    goto Menu;
+                                                }
+                                                else
+                                                {
+                                                    Console.Clear();
+                                                    Console.WriteLine("Proximamente...");
+                                                    Console.ReadKey();
+                                                    Console.Clear();
+                                                    goto Menu; //Momentaneo
+                                                }
+                                                break;
+                                            case 4:
+                                                if (File.Exists(@"Documents\Usuario\" + n + "/Rutina.txt"))
+                                                {
+                                                    Console.WriteLine("Ya posee una rutina actualmente");
+                                                    Console.ReadKey();
+                                                    Console.Clear();
+                                                    goto Menu;
+                                                }
+                              
+                                                else
+                                                { 
+                                                    archivo = new StreamWriter(@"Documents\Usuario\" + n + "/Objetivo rutina.txt");
+                                                    archivo.WriteLine("4");
+                                                    archivo.Close();
+
+                                                    
+                                                    if (pesoL < (pesoIdealM + 1) && pesoL > (pesoIdealm - 1))
+                                                    {
+                                                        
+                                                        Console.Clear();
+                                                        pesoD = pesoL;
+                                                        do
+                                                        {
+                                                            Console.WriteLine("Seleccione la intensidad de la rutina: [1-3]");
+                                                            Console.WriteLine("[1] Intensidad baja");
+                                                            Console.WriteLine("[2] Intensidad intermedia");
+                                                            Console.WriteLine("[3] Intensidad alta");
+                                                            intensidad = Console.ReadLine();
+
+                                                            switch (intensidad)
+                                                            {
+                                                                case "1":
+                                                                    archivo = new StreamWriter(@"Documents\Usuario\" + n + "/Intensidad.txt");
+                                                                    archivo.WriteLine("Baja");
+                                                                    archivo.Close();
+
+                                                                    leer_archivo = new StreamReader(@"Documents\Usuario\" + n + "/Intensidad.txt");
+                                                                    intensidadL = (leer_archivo.ReadLine());
+
+                                                                    Console.Clear();
+                                                                    Archivar(archivo, leer_archivo, n, alturaL, sexoL, edadL, fecha, pesoL, pesoD, intensidadL);
+
+                                                                    Console.WriteLine("Su Gasto calórico diario es de: " + Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL));
+                                                                    Console.WriteLine("Su consumo diario de calorias debe ser de: " + (Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL)));
+                                                                    Console.WriteLine("Su rutina es:");
+                                                                    Rutina(intensidadL);
+                                                                    break;
+
+                                                                case "2":
+                                                                    archivo = new StreamWriter(@"Documents\Usuario\" + n + "/Intensidad.txt");
+                                                                    archivo.WriteLine("Media");
+                                                                    archivo.Close();
+
+                                                                    leer_archivo = new StreamReader(@"Documents\Usuario\" + n + "/Intensidad.txt");
+                                                                    intensidadL = (leer_archivo.ReadLine());
+
+                                                                    Console.Clear();
+                                                                    Archivar(archivo, leer_archivo, n, alturaL, sexoL, edadL, fecha, pesoL, pesoD, intensidadL);
+
+                                                                    Console.WriteLine("Su Gasto calórico diario es de: " + Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL));
+                                                                    Console.WriteLine("Su consumo diario de calorias debe ser de: " + (Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL)));
+                                                                    break;
+
+                                                                case "3":
+
+                                                                    archivo = new StreamWriter(@"Documents\Usuario\" + n + "/Intensidad.txt");
+                                                                    archivo.WriteLine("Alta");
+                                                                    archivo.Close();
+
+                                                                    leer_archivo = new StreamReader(@"Documents\Usuario\" + n + "/Intensidad.txt");
+                                                                    intensidadL = (leer_archivo.ReadLine());
+
+                                                                    Console.Clear();
+                                                                    Archivar(archivo, leer_archivo, n, alturaL, sexoL, edadL, fecha, pesoL, pesoD, intensidadL);
+
+                                                                    Console.WriteLine("Su Gasto calórico diario es de: " + Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL));
+                                                                    Console.WriteLine("Su consumo diario de calorias debe ser de: " + (Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL)));
+                                                                    Console.WriteLine("Su rutina es:");
+                                                                    Rutina(intensidadL);
+                                                                    break;
+
+                                                                default:
+                                                                    Console.WriteLine("La opción seleccionada no es válida");
+                                                                    break;
+                                                            }
+                                                        } while (intensidad != "1" && intensidad != "2" && intensidad != "3");
+                                                    }
+                                                    if (pesoL > pesoIdealM + 1)
+                                                    {
+                                                        pesoD = ((pesoIdealm + pesoIdealM) / 2);
+                                                        do
+                                                        {
+                                                            Console.WriteLine("Seleccione la intensidad de la rutina: [1-3]");
+                                                            Console.WriteLine("[1] Intensidad baja");
+                                                            Console.WriteLine("[2] Intensidad intermedia");
+                                                            Console.WriteLine("[3] Intensidad alta");
+                                                            intensidad = Console.ReadLine();
+
+                                                            switch (intensidad)
+                                                            {
+                                                                case "1":
+                                                                    archivo = new StreamWriter(@"Documents\Usuario\" + n + "/Intensidad.txt");
+                                                                    archivo.WriteLine("Baja");
+                                                                    archivo.Close();
+
+                                                                    leer_archivo = new StreamReader(@"Documents\Usuario\" + n + "/Intensidad.txt");
+                                                                    intensidadL = (leer_archivo.ReadLine());
+
+                                                                    Console.Clear();
+                                                                    Archivar(archivo, leer_archivo, n, alturaL, sexoL, edadL, fecha, pesoL, pesoD, intensidadL);
+
+                                                                    Console.WriteLine("Su Gasto calórico diario es de: " + Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL));
+                                                                    Console.WriteLine("Su consumo diario de calorias debe ser de: " + (ConsumoAumento(pesoL, alturaL, edadL, intensidadL, sexoL) + Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL)));
+
+                                                                    Console.WriteLine("Su rutina es:");
+                                                                    Rutina(intensidadL);
+                                                                    break;
+
+                                                                case "2":
+                                                                    archivo = new StreamWriter(@"Documents\Usuario\" + n + "/Intensidad.txt");
+                                                                    archivo.WriteLine("Media");
+                                                                    archivo.Close();
+
+                                                                    leer_archivo = new StreamReader(@"Documents\Usuario\" + n + "/Intensidad.txt");
+                                                                    intensidadL = (leer_archivo.ReadLine());
+
+                                                                    Console.Clear();
+                                                                    Archivar(archivo, leer_archivo, n, alturaL, sexoL, edadL, fecha, pesoL, pesoD, intensidadL);
+
+                                                                    Console.WriteLine("Su Gasto calórico diario es de: " + Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL));
+                                                                    Console.WriteLine("Su consumo diario de calorias debe ser de: " + (ConsumoAumento(pesoL, alturaL, edadL, intensidadL, sexoL) + Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL)));
+
+                                                                    Console.WriteLine("Su rutina es:");
+                                                                    Rutina(intensidadL);
+                                                                    break;
+
+                                                                case "3":
+                                                                    archivo = new StreamWriter(@"Documents\Usuario\" + n + "/Intensidad.txt");
+                                                                    archivo.WriteLine("Alta");
+                                                                    archivo.Close();
+
+                                                                    leer_archivo = new StreamReader(@"Documents\Usuario\" + n + "/Intensidad.txt");
+                                                                    intensidadL = (leer_archivo.ReadLine());
+
+                                                                    Console.Clear();
+                                                                    Archivar(archivo, leer_archivo, n, alturaL, sexoL, edadL, fecha, pesoL, pesoD, intensidadL);
+
+                                                                    Console.WriteLine("Su Gasto calórico diario es de: " + Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL));
+                                                                    Console.WriteLine("Su consumo diario de calorias debe ser de: " + (ConsumoAumento(pesoL, alturaL, edadL, intensidadL, sexoL) + Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL)));
+                                                                    Console.WriteLine("Su rutina es:");
+                                                                    Rutina(intensidadL);
+                                                                    break;
+
+                                                                default:
+                                                                    Console.WriteLine("La opción seleccionada no es válida");
+                                                                    break;
+                                                            }
+                                                        } while (intensidad != "1" && intensidad != "2" && intensidad != "3");
+
+                                                    }
+                                                    if (pesoL < pesoIdealm)
+                                                    {
+                                                        pesoD = ((pesoIdealm + pesoIdealM) / 2);
+                                                        do
+                                                        {
+                                                            Console.WriteLine("Seleccione la intensidad de la rutina: [1-3]");
+                                                            Console.WriteLine("[1] Intensidad baja");
+                                                            Console.WriteLine("[2] Intensidad intermedia");
+                                                            Console.WriteLine("[3] Intensidad alta");
+                                                            intensidad = Console.ReadLine();
+
+                                                            switch (intensidad)
+                                                            {
+                                                                case "1":
+                                                                    archivo = new StreamWriter(@"Documents\Usuario\" + n + "/Intensidad.txt");
+                                                                    archivo.WriteLine("Baja");
+                                                                    archivo.Close();
+
+                                                                    leer_archivo = new StreamReader(@"Documents\Usuario\" + n + "/Intensidad.txt");
+                                                                    intensidadL = (leer_archivo.ReadLine());
+
+                                                                    Console.Clear();
+                                                                    Archivar(archivo, leer_archivo, n, alturaL, sexoL, edadL, fecha, pesoL, pesoD, intensidadL);
+
+                                                                    Console.WriteLine("Su Gasto calórico diario es de: " + Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL));
+                                                                    Console.WriteLine("Su consumo diario de calorias debe ser de: " + (Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL) - 500));
+                                                                    Console.WriteLine("Su rutina es:");
+                                                                    Rutina(intensidadL);
+                                                                    break;
+
+                                                                case "2":
+                                                                    archivo = new StreamWriter(@"Documents\Usuario\" + n + "/Intensidad.txt");
+                                                                    archivo.WriteLine("Media");
+                                                                    archivo.Close();
+
+                                                                    leer_archivo = new StreamReader(@"Documents\Usuario\" + n + "/Intensidad.txt");
+                                                                    intensidadL = (leer_archivo.ReadLine());
+
+                                                                    Console.Clear();
+                                                                    Archivar(archivo, leer_archivo, n, alturaL, sexoL, edadL, fecha, pesoL, pesoD, intensidadL);
+
+                                                                    Console.WriteLine("Su Gasto calórico diario es de: " + Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL));
+                                                                    Console.WriteLine("Su consumo diario de calorias debe ser de: " + (Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL) - 500));
+                                                                    break;
+
+                                                                case "3":
+
+                                                                    archivo = new StreamWriter(@"Documents\Usuario\" + n + "/Intensidad.txt");
+                                                                    archivo.WriteLine("Alta");
+                                                                    archivo.Close();
+
+                                                                    leer_archivo = new StreamReader(@"Documents\Usuario\" + n + "/Intensidad.txt");
+                                                                    intensidadL = (leer_archivo.ReadLine());
+
+                                                                    Console.Clear();
+                                                                    Archivar(archivo, leer_archivo, n, alturaL, sexoL, edadL, fecha, pesoL, pesoD, intensidadL);
+
+                                                                    Console.WriteLine("Su Gasto calórico diario es de: " + Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL));
+                                                                    Console.WriteLine("Su consumo diario de calorias debe ser de: " + (Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL) - 500));
+                                                                    Console.WriteLine("Su rutina es:");
+                                                                    Rutina(intensidadL);
+                                                                    break;
+
+                                                                default:
+                                                                    Console.WriteLine("La opción seleccionada no es válida");
+                                                                    break;
+                                                            }
+                                                        } while (intensidad != "1" && intensidad != "2" && intensidad != "3");
+                                                    }
+                                                }
+                                                break;
+                                            case 5:
+
+                                                Console.Clear();
+                                                
+                       
+                                                if (File.Exists(@"Documents\Usuario\" + n + "/Rutina.txt"))
+
+                                                {
+                                                    leer_archivo = new StreamReader(@"Documents\Usuario\" + n + "/Objetivo rutina.txt");
+                                                    ObjetivoRutina = (leer_archivo.ReadLine());
+
+                                                    leer_archivo = new StreamReader(@"Documents\Usuario\" + n + "/Intensidad.txt");
+                                                    intensidadL = (leer_archivo.ReadLine());
+
+                                                    if (ObjetivoRutina == "1")
+                                                    {
+                                                        Console.WriteLine("Su Gasto calórico diario es de: " + Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL));
+                                                        Console.WriteLine("Su consumo diario de calorias debe ser de: " + (ConsumoAumento(pesoL, alturaL, edadL, intensidadL, sexoL) + Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL)));
+
+                                                        Console.WriteLine("Su rutina es:");
+                                                        Rutina(intensidadL);
+
+                                                        Console.ReadKey();
+                                                        Console.Clear();
+                                                    }
+                                                    if (ObjetivoRutina == "2")
+                                                    {
+                                                        Console.WriteLine("Su Gasto calórico diario es de: " + Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL));
+                                                        Console.WriteLine("Su consumo diario de calorias debe ser de: " + (Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL) - 500));
+
+                                                        Console.WriteLine("Su rutina es:");
+                                                        Rutina(intensidadL);
+
+                                                        Console.ReadKey();
+                                                        Console.Clear();
+                                                    }
+                                                    if (ObjetivoRutina == "4")
+                                                    {
+                                                        Console.WriteLine("Su Gasto calórico diario es de: " + Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL));
+                                                        Console.WriteLine("Su consumo diario de calorias debe ser de: " + (Gasto_calorico(pesoL, alturaL, edadL, intensidadL, sexoL)));
+
+                                                        Console.WriteLine("Su rutina es:");
+                                                        Rutina(intensidadL);
+
+                                                        Console.ReadKey();
+                                                        Console.Clear();
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    Console.WriteLine("No existe una rutina actualmente");
+                                                    Console.ReadKey();
+                                                    Console.Clear();
+                                                    goto Menu;
+                                                }
+                                                Console.ReadKey();
+                                                Console.Clear();
+                                                break;
+                                        }
+                                    }
+                                    while (opcion1 != 1 && opcion1 != 2 && opcion1 != 3 && opcion1 != 4 && opcion1 != 5);
+
+                                }
+                                else
+                                {
+                                    Console.WriteLine("La contraseña que ingresó es incorrecta");
+                                }
+
+                            }
+
+                            else
+                            {
+                                Console.WriteLine("Este nombre de usuario no existe");
+                                goto Registro;
+                            }
+                            break;
+                        case 2:
+                        inicio:
+                            Console.Write("Introduzca su nombre de usuario: ");
+                            n = Console.ReadLine();
+
+                            if (Directory.Exists(@"Documents\Usuario\" + n))
+                            {
+                                Console.WriteLine("Este nombre de usuario ya esta en uso. Intentelo de nuevo");
+                                goto inicio;
+
+                            }
+
+                            Directory.CreateDirectory(@"Documents\Usuario\" + n);
+                            archivo = new StreamWriter(@"Documents\Usuario\" + n + "/Usuario.txt");
+                            archivo.WriteLine(n);
+                            archivo.Close();
+
+                            Console.Write("Digite su edad: ");
+                            edad = Convert.ToInt32(Console.ReadLine());
+
+                            archivo = new StreamWriter(@"Documents\Usuario\" + n + "/Edad.txt");
+                            archivo.WriteLine(edad);
+                            archivo.Close();
+
+
+                            Console.Write("Digite su altura (en centimetros): ");
+                            altura = Convert.ToDouble(Console.ReadLine());
+
+                            archivo = new StreamWriter(@"Documents\Usuario\" + n + "/Altura.txt");
+                            archivo.WriteLine(altura);
+                            archivo.Close();
+
+                            do
+                            {
+                                Console.WriteLine("Seleccione su sexo: [1-2]");
+                                Console.WriteLine("[1] Femenino");
+                                Console.WriteLine("[2] Masculino");
+                                sexo = Console.ReadLine().ToLower();
+                            } while (sexo != "femenino" && sexo != "masculino" && sexo != "1" && sexo != "2");
+
+                            if (sexo == "1" || sexo == "femenino")
+                            {
+                                archivo = new StreamWriter(@"Documents\Usuario\" + n + "/Sexo.txt");
+                                archivo.WriteLine("Femenino");
+                                archivo.Close();
+                            }
+
+                            if (sexo == "2" || sexo == "masculino")
+                            {
+                                archivo = new StreamWriter(@"Documents\Usuario\" + n + "/Sexo.txt");
+                                archivo.WriteLine("Masculino");
+                                archivo.Close();
+                            }
+
+                            Console.Write("Digite su peso (en kilogramos): ");
+                            peso = Convert.ToDouble(Console.ReadLine());
+                            archivo = new StreamWriter(@"Documents\Usuario\" + n + "/Peso.txt");
+                            archivo.WriteLine(peso);
+                            archivo.Close();
+
+                            Console.Write("Introduzca una contraseña: ");
+                            contraseña = Console.ReadLine();
+
+                            archivo = new StreamWriter(@"Documents\Usuario\" + n + "/Contraseña.txt");
+                            archivo.WriteLine(contraseña);
+                            archivo.Close();
+
+                            Console.Clear();
+                            Console.WriteLine("Se ha creado su cuenta exitosamente");
+                            Console.ReadKey();
+                            break;
+                        default:
+                            Console.WriteLine("La acción elegida no esta disponible");
+                            break;
+
+                    }
+                } while (opcion != 1 && opcion != 2);
+
+                Console.WriteLine("¿Desea continuar? [Si/No]");
+                respuesta = Console.ReadLine().ToLower();
+
+            } while (respuesta == "si");
+        }
+        static void Archivar(TextWriter archivo, TextReader leer_archivo, String n, Double alturaL, String sexoL, Int32 edadL, DateTime fecha, Double pesoL, Double pesoD, String intensidadL)
+        {
+            archivo = new StreamWriter(@"Documents\Usuario\" + n + "/Rutina.txt");
+
+            archivo.WriteLine("Su altura: " + alturaL);
+            archivo.WriteLine("Su sexo: " + sexoL);
+            archivo.WriteLine("Su edad inicial: " + edadL);
+            archivo.WriteLine("La fecha inicial: " + fecha.ToString("dd/MM/yy"));
+            archivo.WriteLine("Su peso actual: " + pesoL);
+            archivo.WriteLine("Su peso deseado: " + pesoD);
+            archivo.WriteLine("La intensidad actual: " + intensidadL);
+            archivo.Close();
+
+            leer_archivo = new StreamReader(@"Documents\Usuario\" + n + "/Rutina.txt");
+            Console.WriteLine(leer_archivo.ReadToEnd());
+        }
+        static void Rutina(String IntensidadL)
+        {
+            if (IntensidadL == "Baja")
+            {
+                Console.ForegroundColor = ConsoleColor.Cyan;
+
+                Console.WriteLine("\n" +
+                       "\n       --------------------------------------------------" +
+                       "\n                             Lunes                       " +
+                       "\n       --------------------------------------------------" +
+                       "\n [1] - Flexiones 3x10, 1x11 o Max" +
+                       "\n [2] - Flexiones de brazos abiertos (3x10),(1x11 o  MAX)" +
+                       "\n [3] - Flexiones con inclinación (3x5),(3x6 o MAX)" +
+                       "\n [4] - Flexiones de brazos abiertos (3x10),(1x11 o  MAX) " +
+                       "\n                             Martes                       " +
+                       "\n       --------------------------------------------------" +
+                       "\n [1] - Flexiones de diamantes (3x10),(1x11 o  MAX)" +
+                       "\n [2] - Estiramiento de cobra (3x30seg)" +
+                       "\n [3] - Levantamiento de peso (mochilas o bolsos" +
+                       "\n [4] - Triceps dips (3x10),(1x11 o  MAX)" +
+                       "\n [5] - Plancha/Tablón (3x1m),(Y un MAX rep)" +
+                       "\n [6] - Levantamiento de piernas (3x30seg),(Y un MAX rep)" +
+                       "\n       --------------------------------------------------" +
+                       "\n                           Miercoles                       " +
+                       "\n       --------------------------------------------------" +
+                       "\n [1] - Plancha/Tablón (3x1m),(Y un MAX rep)" +
+                       "\n [2] - Plancha/Tablón (3x1m),(Y un MAX rep)" +
+                       "\n [3] - Levantamiento de piernas (3x30seg),(Y un MAX rep)" +
+                       "\n       --------------------------------------------------" +
+                       "\n                            Jueves                       " +
+                       "\n       --------------------------------------------------" +
+                       "\n [1] - Descanso" +
+                       "\n                           Viernes                       " +
+                       "\n       --------------------------------------------------" +
+                       "\n [1] - Levantamiento de pantorrillas (1x20),(1x30), (1x40 o MAX)" +
+                       "\n [2] - Estocada hacia atrás (3x10)" +
+                       "\n [3] - Levantamiento de peso (mochilas o bolsos" +
+                       "\n [4] - Flexiones con inclinación (3x10),(1x11 o  MAX)" +
+                       "\n [5] - Levantamiento lateral de brazos (3x10),(1x11 o  MAX)" +
+                       "\n [6] - Levantamiento frontal de brazos (3x10),(1x11 o  MAX)" +
+                       "\n       --------------------------------------------------" +
+                       "\n                            Sabado                       " +
+                       "\n       --------------------------------------------------" +
+                       "\n [1] - Descanso" +
+                       "\n       --------------------------------------------------" +
+                       "\n                            Domingo                       " +
+                       "\n       --------------------------------------------------" +
+                       "\n [1] - Descanso" +
+                       "\n");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+            if (IntensidadL == "Media")
+            {
+                Console.ForegroundColor = ConsoleColor.Cyan;
+
+                Console.WriteLine("\n" +
+
+                    "\n Descanso de 30seg entre cada set y 45seg de descanso entre cada ejercicio" +
+
+                       "\n       --------------------------------------------------" +
+                       "\n                             Lunes                       " +
+                       "\n       --------------------------------------------------" +
+                       "\n [1] - Flexiones (3x20, 1x21 o Max)" +
+                       "\n [2] - Flexiones de brazos abiertos (3x20),(1x21 o  MAX)" +
+                       "\n [3] - Flexiones con inclinación (3x10),(3x11 o MAX)" +
+                       "\n [4] - Flexiones declinadas (3x10),(1x11 o  MAX) " +
+
+                       "\n [1] - Triceps dips (3x20),(1x21 o  MAX)" +
+                       "\n [2] - Flexiones de diamantes(3x12), (1x13 o  MAX)" +
+                       "\n [3] - Plancha / Tablón(3x2m),(Y un MAX rep)" +
+                       "\n [4] - Levantamiento de piernas(3x1: 30M, (Y un MAX rep)" +
+                       "\n [5] - Escalada de montaña(3x1m),(Y un MAX rep)" +
+
+                       "\n       --------------------------------------------------" +
+                       "\n                             Martes                       " +
+                       "\n       --------------------------------------------------" +
+                       "\n [1] -  Flexiones de diamantes (3x10),(1x11 o  MAX)" +
+                       "\n [2] -  Estiramiento de cobra(3x1m)" +
+                       "\n [3] -  Levantamiento de peso(mochilas o bolsos)" +
+
+                       "\n       --------------------------------------------------" +
+                       "\n                            Miercoles                       " +
+                       "\n       --------------------------------------------------" +
+                       "\n [1] - Plancha/Tablón (3x1m),(Y un MAX rep)" +
+                       "\n [2] - Escalada de montaña (3x1m),(Y un MAX rep" +
+                       "\n [3] - Levantamiento de piernas (3x1m),(Y un MAX rep)" +
+                       "\n       --------------------------------------------------" +
+                       "\n                            Jueves                       " +
+                       "\n       --------------------------------------------------" +
+                       "\n [1] - Descanso" +
+                       "\n       --------------------------------------------------" +
+                       "\n                            Viernes                       " +
+                       "\n       --------------------------------------------------" +
+                       "\n [1] - Sentadillas (3x30),(1x31 o  MAX)" +
+                       "\n [2] - Sentadillas de piernas individuales (3x5)" +
+                       "\n [3] - Estocada hacia atrás (3x20)" +
+                       "\n [4] - Levantamiento de pantorrillas (1x40),(1x50), (1x60 o MAX)" +
+
+
+                       "\n [5] - Flexiones con inclinación (3x20),(1x21 o  MAX)" +
+                       "\n [6] - Levantamiento lateral de brazos (3x25),(1x26 o  MAX)" +
+                       "\n [7] - Levantamiento frontal de brazos (3x25),(1x26 o  MAX)" +
+
+                       "\n       --------------------------------------------------" +
+                       "\n                            Sabado                       " +
+                       "\n       --------------------------------------------------" +
+                       "\n [1] - Descanso" +
+                       "\n       --------------------------------------------------" +
+                       "\n                            Domingo                       " +
+                       "\n       --------------------------------------------------" +
+                       "\n [1] - Descanso" +
+                       "\n");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+            if (IntensidadL == "Alta")
+            {
+                Console.ForegroundColor = ConsoleColor.Cyan;
+
+                Console.WriteLine("\n" +
+
+                   "\n Descanso de 30seg entre cada set y 45seg de descanso entre cada ejercicio" +
+
+                       "\n       --------------------------------------------------" +
+                       "\n                             Lunes                       " +
+                       "\n       --------------------------------------------------" +
+                       "\n [1] - Flexiones (2x25),(1x30),(1x31 o  MAX) " +
+                       "\n [2] - Flexiones de brazos abiertos(2x25),(1x30),(1x31 o  MAX)" +
+                       "\n [3] - Flexiones con inclinación (3x20),(1x21 o  MAX)" +
+                       "\n [4] - Flexiones declinadas(3x20),(1x21 o  MAX)" +
+
+                       "\n [1] - Triceps dips (3x30),(1x31 o  MAX)" +
+                       "\n [2] - Flexiones de diamantes(3x15), (1x16 o  MAX)" +
+                       "\n [3] -Plancha / Tablón(3x3m),(Y un MAX rep) " +
+                       "\n [4] -  Levantamiento de piernas(3x2: 30M, (Y un MAX rep)" +
+                       "\n [5] - Escalada de montaña(3x2m),(Y un MAX rep)" +
+
+                       "\n       --------------------------------------------------" +
+                       "\n                             Martes                       " +
+                       "\n       --------------------------------------------------" +
+                       "\n [1] -  Flexiones de diamantes (2x20),(1x25 o  MAX)" +
+                       "\n [2] -  Estiramiento de cobra(3x1m)" +
+                       "\n [3] -  Levantamiento de peso(mochilas o bolsos)" +
+
+                       "\n       --------------------------------------------------" +
+                       "\n                            Miercoles                       " +
+                       "\n       --------------------------------------------------" +
+                       "\n [1] - Plancha/Tablón (3x2m),(Y un MAX rep)" +
+                       "\n [2] - Escalada de montaña (3x2m),(Y un MAX rep" +
+                       "\n [3] - Levantamiento de piernas (3x2m),(Y un MAX rep)" +
+                       "\n       --------------------------------------------------" +
+                       "\n                            Jueves                       " +
+                       "\n       --------------------------------------------------" +
+                       "\n [1] - Descanso" +
+                       "\n       --------------------------------------------------" +
+                       "\n                            Viernes                       " +
+                       "\n       --------------------------------------------------" +
+                       "\n [1] - Sentadillas (3x50),(1x51 o  MAX)" +
+                       "\n [2] - Sentadillas de piernas individuales (3x15)" +
+                       "\n [3] - Estocada hacia atrás (3x25)" +
+                       "\n [4] - Levantamiento de pantorrillas (1x70),(1x80), (1x90 o MAX)" +
+
+
+                       "\n [5] - Flexiones con inclinación (3x25),(1x26 o  MAX)" +
+                       "\n [6] - Levantamiento lateral de brazos (3x30),(1x31 o  MAX)" +
+                       "\n [7] - Levantamiento frontal de brazos (3x30),(1x30 o  MAX)" +
+
+                       "\n       --------------------------------------------------" +
+                       "\n                            Sabado                       " +
+                       "\n       --------------------------------------------------" +
+                       "\n [1] - Descanso" +
+                       "\n       --------------------------------------------------" +
+                       "\n                            Domingo                       " +
+                       "\n       --------------------------------------------------" +
+                       "\n [1] - Descanso" +
+                       "\n");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+        }
+        
+        static Double Gasto_calorico(Double pesoL, Double alturaL, Int32 edadL, String intensidadL, String SexoL)
+        {
+            Double Gastocal;
+            if (intensidadL == "Baja")
+            {
+                if (SexoL == "femenino")
+                {
+
+                    Gastocal = ((655 + (9.6 * pesoL) + (1.8 * alturaL) - (4.7 * edadL))) * 1.3;
+                    return Gastocal;
+                }
+                else
+                {
+                    Gastocal = ((66 + (13.7 * pesoL) + (5 * alturaL) - (6.75 * edadL))) * 1.3;
+                    return Gastocal;
+                }
+            }
+
+            if (intensidadL == "Media")
+            {
+                if (SexoL == "femenino")
+                {
+
+                    Gastocal = ((655 + (9.6 * pesoL) + (1.8 * alturaL) - (4.7 * edadL))) * 1.4;
+                    return Gastocal;
+                }
+                else
+                {
+                    Gastocal = ((66 + (13.7 * pesoL) + (5 * alturaL) - (6.75 * edadL))) * 1.4;
+                    return Gastocal;
+                }
+            }
+
+            // Intensidad Alta
+            {
+                if (SexoL == "femenino")
+                {
+
+                    Gastocal = ((655 + (9.6 * pesoL) + (1.8 * alturaL) - (4.7 * edadL))) * 1.5;
+                    return Gastocal;
+                }
+                else
+                {
+                    Gastocal = ((66 + (13.7 * pesoL) + (5 * alturaL) - (6.75 * edadL))) * 1.5;
+                    return Gastocal;
+                }
+            }
+        }
+
+        static Double ConsumoAumento(Double pesoL, Double alturaL, Int32 edadL, String intensidadL, String SexoL)
+        {
+            Double consumo;
+
+            if (SexoL == "femenino")
+            {
+                Gasto_calorico(pesoL, alturaL, edadL, intensidadL, SexoL);
+
+                if (intensidadL == "Baja")
+                {
+                    consumo = ((Gasto_calorico(pesoL, alturaL, edadL, intensidadL, SexoL) / 100) * 10);
+                    return consumo;
+                }
+                if (intensidadL == "Media")
+                {
+                    consumo = ((Gasto_calorico(pesoL, alturaL, edadL, intensidadL, SexoL) / 100) * 12);
+                    return consumo;
+                }
+                //Intensidad == Alta
+                {
+                    consumo = ((Gasto_calorico(pesoL, alturaL, edadL, intensidadL, SexoL) / 100) * 15);
+                    return consumo;
+                }
+            }
+
+            else
+            {
+                Gasto_calorico(pesoL, alturaL, edadL, intensidadL, SexoL);
+
+                if (intensidadL == "Baja")
+                {
+                    consumo = ((Gasto_calorico(pesoL, alturaL, edadL, intensidadL, SexoL) / 100) * 15);
+                    return consumo;
+                }
+                if (intensidadL == "Media")
+                {
+                    consumo = ((Gasto_calorico(pesoL, alturaL, edadL, intensidadL, SexoL) / 100) * 17);
+                    return consumo;
+                }
+                // Intensidad == Alta
+                {
+                    consumo = (Gasto_calorico(pesoL, alturaL, edadL, intensidadL, SexoL) * 20);
+                    return consumo;
+                }
+            }
+        }
+
+    }
+}
